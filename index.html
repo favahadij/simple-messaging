@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Real-Time Number Display</title>
+    <style>
+        body {
+            background-color: black;
+            color: white;
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        #display {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+        .button {
+            background-color: #444;
+            border: none;
+            color: white;
+            padding: 20px;
+            font-size: 24px;
+            margin: 5px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .button:hover {
+            background-color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div id="display">-</div>
+    <button class="button" onclick="displayNumber(1)">1</button>
+    <button class="button" onclick="displayNumber(2)">2</button>
+    <button class="button" onclick="displayNumber(3)">3</button>
+    <button class="button" onclick="displayNumber(4)">4</button>
+
+    <!-- Add Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-database.js"></script>
+    
+    <script>
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+            databaseURL: "https://YOUR_PROJECT_ID.firebaseio.com",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_PROJECT_ID.appspot.com",
+            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+            appId: "YOUR_APP_ID"
+        };
+
+        // Initialize Firebase
+        const app = firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
+        const displayElement = document.getElementById('display');
+        const numbersRef = database.ref('numbers');
+
+        // Listen for changes in the number
+        numbersRef.on('value', (snapshot) => {
+            const number = snapshot.val();
+            displayElement.innerText = number || '-';
+        });
+
+        // Update the number when a user clicks a button
+        function displayNumber(number) {
+            numbersRef.set(number);  // Save the clicked number to Firebase
+        }
+    </script>
+</body>
+</html>
